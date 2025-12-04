@@ -1,0 +1,23 @@
+import express from 'express'
+const app=express()
+import usersRouter from './routes/auth.route.js'
+import { PORT } from './config/env.js'
+import cookieparser from 'cookie-parser'
+
+import connectTodatabase from './database/mongoose-connection.js'
+import path from 'path'
+import productRouter from './routes/product.route.js'
+
+connectTodatabase().then(()=>{
+    console.log("Database connected successfully")
+}).catch((e)=>{
+    console.error("Database connection failed",e)
+})
+app.use(express.json())
+app.use(cookieparser())
+
+app.use(express.urlencoded({extended:true}))
+app.use('/api/v1/auth',usersRouter)
+app.use('/api/v1/product',productRouter)
+
+app.listen(PORT)
