@@ -3,7 +3,7 @@ const app=express()
 import usersRouter from './routes/auth.route.js'
 import { PORT } from './config/env.js'
 import cookieparser from 'cookie-parser'
-
+import cors from 'cors'
 import connectTodatabase from './database/mongoose-connection.js'
 import path from 'path'
 import productRouter from './routes/product.route.js'
@@ -15,6 +15,10 @@ connectTodatabase().then(()=>{
 }).catch((e)=>{
     console.error("Database connection failed",e)
 })
+app.use(cors({
+    origin:'http://localhost:5173',
+    credentials:true,
+}))
 app.use(express.json())
 app.use(cookieparser())
 

@@ -2,6 +2,7 @@ import { Router } from "express";
 const orderrouter = Router();
 import { cancelOrder, getAllOrders, getOrderById, getUserOrders, placeOrder, updateOrderStatus } from "../controllers/order.controller.js";
 import { isAdmin, verifyJWT } from "../middlewares/auth.middleware.js";
+//admn routes
 orderrouter.get('/all-orders',verifyJWT,isAdmin,getAllOrders)
 orderrouter.get('/',verifyJWT,getUserOrders)
 orderrouter.get('/user-orders',verifyJWT,getUserOrders)
