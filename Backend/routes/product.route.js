@@ -7,6 +7,6 @@ import { isAdmin, verifyJWT } from "../middlewares/auth.middleware.js";
 productRouter.post('/create-product',verifyJWT,isAdmin,upload.single('image'),createProduct)
 productRouter.get('/',getAllProducts)
 productRouter.get('/:id',getProductById)
-productRouter.delete('/:id',deleteProductById)
-productRouter.patch('/:id',upload.single('image'),updateProduct)
+productRouter.delete('/:id',verifyJWT,isAdmin,deleteProductById)
+productRouter.patch('/:id',verifyJWT,isAdmin,upload.single('image'),updateProduct)
 export default productRouter;

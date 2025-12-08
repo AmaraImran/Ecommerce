@@ -10,6 +10,7 @@ import Cart from "./pages/Cart";
 import Profile from "./pages/Profile";
 import Category from "./pages/Category";
 import AuthLayout from "./components/AuthLayout";
+import AdminDashboard from "./admin/AdminDashboard";
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
           {/* Protected routes (later adding auth middleware) */}
           <Route path="cart" element={<Cart />} />
           <Route path="profile" element={<Profile />} />
+          <Route path="/admn" element={<AdminDashboard/>}/>
 
         </Route>
       </Routes>
