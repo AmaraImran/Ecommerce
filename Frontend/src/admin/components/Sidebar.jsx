@@ -24,6 +24,7 @@ export default function Sidebar() {
       <SidebarItem icon={<ShoppingCart size={28} />} link="/admin/orders" tooltip="Orders" />
       <SidebarItem icon={<Users size={28} />} link="/admin/users" tooltip="Users" />
       <SidebarItem icon={<Settings size={28} />} link="/admin/settings" tooltip="Settings" />
+      
 
     </div>
   );

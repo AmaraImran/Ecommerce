@@ -21,8 +21,9 @@ export default function Login() {
       const res = await api.post(`/auth/sign-in/`, formData, {
         withCredentials: true,
       });
-
-      console.log(res.data);
+localStorage.setItem("token",res.data.token)
+localStorage.setItem("user",res.data.user)
+      
       alert("Logged in successfully!");
       navigate("/");
     } catch (err) {
