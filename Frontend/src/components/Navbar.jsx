@@ -17,7 +17,8 @@ export default function Navbar() {
         {/* Desktop Menu */}
         <ul className="hidden md:flex space-x-10 items-center font-medium">
           <NavItem to="/" label="Home" />
-          <NavItem to="/shop" label="Shop" />
+          <NavItem to="/product" label="Shop" />
+          <NavItem to="/cart" label="cart" />
 
           <Link
             to="/login"

@@ -21,7 +21,7 @@ export default function Hero() {
         {/* RIGHT IMAGE */}
         <div className="md:w-1/2 flex justify-center mt-10 md:mt-0">
           <img
-            src="https://www.vecteezy.com/png/26751265-woman-red-dress-waving-flying-silk-fabric-beauty-model-generative-ai"
+            src="/hero-3.png"
             alt="hero product"
             className="w-[350px] md:w-[450px] drop-shadow-2xl"
           />

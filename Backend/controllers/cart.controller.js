@@ -3,57 +3,41 @@ import Product from "../models/productmodel.js";
 
 export const addToCart = async (req, res) => {
   try {
-    const userId = req.user.id;  // comes from JWT middleware
-    const { productId, quantity } = req.body;
+    const userId = req.user.id;
+    const productId = req.body.productId;
+    const quantity = Number(req.body.quantity) || 1;
 
-    // Check if product exists
     const product = await Product.findById(productId);
     if (!product)
       return res.status(404).json({ message: "Product not found" });
 
-    // Find user's cart
     let cart = await Cart.findOne({ userId });
 
-    // If no cart exists → create new cart
     if (!cart) {
       cart = new Cart({
         userId,
         items: [{ productId, quantity }],
       });
-
-      await cart.save();
-      return res.status(201).json({
-        message: "Cart created & product added",
-        cart,
-      });
-    }
-
-    // Cart exists → check if product already inside
-    const itemIndex = cart.items.findIndex(
-      (item) => item.productId.toString() === productId
-    );
-
-    if (itemIndex > -1) {
-      // If product already exists → increase quantity
-      cart.items[itemIndex].quantity += quantity;
     } else {
-      // Push a new item
-      cart.items.push({ productId, quantity });
+      const itemIndex = cart.items.findIndex(
+        (item) => item.productId.toString() === productId
+      );
+
+      if (itemIndex > -1) {
+        cart.items[itemIndex].quantity += quantity;
+      } else {
+        cart.items.push({ productId, quantity });
+      }
     }
 
-    // Save cart
     await cart.save();
-
-    res.status(200).json({
-      message: "Product added to cart",
-      cart,
-    });
+    res.status(200).json(cart);
 
   } catch (error) {
-    console.log(error);
     res.status(500).json({ message: "Server error" });
   }
 };
+
 export const removeFromCart = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -75,7 +59,7 @@ export const removeFromCart = async (req, res) => {
 };
 export const updateQuantity = async (req, res) => {
   try {
-    const userId = req.user._id;
+    const userId = req.user.id;
     const { productId, quantity } = req.body;
 
     const cart = await Cart.findOne({ userId });

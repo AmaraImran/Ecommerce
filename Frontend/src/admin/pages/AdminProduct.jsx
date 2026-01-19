@@ -22,7 +22,11 @@ export default function AdminProducts() {
     if (!confirm("Are you sure?")) return;
 
     try {
-      await api.delete(`/products/${id}`);
+      await api.delete(`/product/${id}`,{
+        headers:{
+          "Authorization": `Bearer ${localStorage.getItem("token")}`
+        }
+      });
       setProducts((prev) => prev.filter((p) => p._id !== id));
     } catch (error) {
       console.error("Delete error:", error);

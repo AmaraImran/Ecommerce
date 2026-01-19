@@ -43,18 +43,48 @@ export const createProduct = async (req, res) => {
   }
 };
 export const getAllProducts = async (req, res) => {
-try {
-   const products= await Product.find()
-   res.status(200).json({
-    message:"Products fetched successfully",
-    products
-   })
-    
-} catch (error) {
-    res.status(500).json({ message: "Server error" ,error:error.message});
-}
+  try {
+    const { category, sort = "latest", page = 1, limit = 9 } = req.query;
 
-}
+    const filter = {};
+    if (category) {
+      filter.category = category; // exact match
+    }
+
+    // Sorting
+    const sortOption =
+      sort === "latest"
+        ? { createdAt: -1 }
+        : { createdAt: 1 };
+
+    // Pagination numbers
+    const pageNumber = Number(page);
+    const limitNumber = Number(limit);
+
+    // Fetch products with filters, sorting & pagination
+    const products = await Product.find(filter)
+      .sort(sortOption)
+      .skip((pageNumber - 1) * limitNumber)
+      .limit(limitNumber);
+
+    // Total count for pagination UI
+    const totalCount = await Product.countDocuments(filter);
+
+    res.status(200).json({
+      message: "Products fetched successfully",
+      totalCount,
+      products,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Server error",
+      error: error.message,
+    });
+  }
+};
+
+
+
 export const getProductById=async(req,res)=>{
     try{
 const{id}=req.params;

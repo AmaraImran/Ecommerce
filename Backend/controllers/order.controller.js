@@ -65,7 +65,8 @@ export const placeOrder = async (req, res) => {
 // Get all orders of logged-in user
 export const getUserOrders = async (req, res) => {
     try {
-        const orders = await Order.find({ userId: req.user.id }).sort({ createdAt: -1 });
+        const orders = await Order.find({ userId: req.user.id }).sort({ createdAt: -1 })
+        .populate("items.productId", "name price");
 
         res.status(200).json({
             success: true,
@@ -109,7 +110,7 @@ export const updateOrderStatus = async (req, res) => {
 
         order.orderStatus = req.body.status || order.orderStatus;
 
-        if (order.orderStatus === "delivered") {
+        if (order.orderStatus === "Delivered") {
             order.deliveredAt = Date.now();
         }
 
@@ -128,14 +129,14 @@ export const updateOrderStatus = async (req, res) => {
 export const cancelOrder = async (req, res) => {
     try {
         console.log(req.params.id)
-        const order = await Order.find({
-            id: req.params.id,
+        const order = await Order.findById({
+            _id: req.params.id,
             user: req.user.id,
         });
 
         if (!order) return res.status(404).json({ message: "Order not found" });
-
-        if (order.orderStatus !== "pending") {
+console.log(order)
+        if (order.orderStatus !== "Pending") {
             return res.status(400).json({ message: "You cannot cancel this order now" });
         }
 
