@@ -17,7 +17,7 @@ connectTodatabase().then(()=>{
     console.error("Database connection failed",e)
 })
 app.use(cors({
-    origin:'http://localhost:5173',
+    origin: process.env.origin,
     credentials:true,
 }))
 app.use(express.json())
