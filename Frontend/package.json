@@ -12,10 +12,12 @@
   "dependencies": {
     "@tailwindcss/vite": "^4.1.17",
     "axios": "^1.13.2",
+    "jwt-decode": "^4.0.0",
     "lucide-react": "^0.556.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-router-dom": "^7.10.1",
+    "recharts": "^3.10.1",
     "tailwindcss": "^4.1.17"
   },
   "devDependencies": {

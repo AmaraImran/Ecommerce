@@ -62,6 +62,7 @@ export const placeOrder = async (req, res) => {
     res.status(500).json({ message: "Something went wrong", error });
   }
 };
+
 // Get all orders of logged-in user
 export const getUserOrders = async (req, res) => {
     try {
@@ -76,6 +77,7 @@ export const getUserOrders = async (req, res) => {
         res.status(500).json({ message: "Error fetching orders", error });
     }
 };
+
 export const getOrderById = async (req, res) => {
     try {
         const order = await Order.findById(req.params.id)
@@ -90,6 +92,7 @@ export const getOrderById = async (req, res) => {
         res.status(500).json({ message: "Error fetching order", error });
     }
 };
+
 export const getAllOrders = async (req, res) => {
     try {
         const orders = await Order.find()
@@ -102,13 +105,21 @@ export const getAllOrders = async (req, res) => {
         res.status(500).json({ message: "Error fetching all orders", error });
     }
 };
+
 export const updateOrderStatus = async (req, res) => {
     try {
+        const { status } = req.body;
+
+        const validStatuses = ["Pending", "Shipped", "Delivered", "Cancelled"];
+        if (!validStatuses.includes(status)) {
+            return res.status(400).json({ message: "Invalid order status" });
+        }
+
         const order = await Order.findById(req.params.id);
 
         if (!order) return res.status(404).json({ message: "Order not found" });
 
-        order.orderStatus = req.body.status || order.orderStatus;
+        order.orderStatus = status;
 
         if (order.orderStatus === "Delivered") {
             order.deliveredAt = Date.now();
@@ -126,21 +137,21 @@ export const updateOrderStatus = async (req, res) => {
         res.status(500).json({ message: "Error updating order", error });
     }
 };
+
 export const cancelOrder = async (req, res) => {
     try {
-        console.log(req.params.id)
-        const order = await Order.findById({
+        const order = await Order.findOne({
             _id: req.params.id,
-            user: req.user.id,
+            userId: req.user.id,
         });
 
         if (!order) return res.status(404).json({ message: "Order not found" });
-console.log(order)
+
         if (order.orderStatus !== "Pending") {
             return res.status(400).json({ message: "You cannot cancel this order now" });
         }
 
-        order.orderStatus = "cancelled";
+        order.orderStatus = "Cancelled";
         await order.save();
 
         res.status(200).json({ success: true, message: "Order cancelled" });

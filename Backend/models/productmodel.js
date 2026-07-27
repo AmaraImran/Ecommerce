@@ -23,11 +23,11 @@ const productSchema = new mongoose.Schema(
       default: 0,
     },
 
-    category: {
-      type: String,
-      default: "",
-    },
-
+category: {
+  type: mongoose.Schema.Types.ObjectId,
+  ref: "Category",
+  required: true,
+},
     image: {
       type: String,
       default: "",

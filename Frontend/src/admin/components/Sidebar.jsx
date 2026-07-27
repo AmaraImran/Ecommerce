@@ -3,8 +3,8 @@ import {
   LayoutDashboard,
   Package,
   ShoppingCart,
-  Users,
-  Settings
+  PlusSquare,
+  Tag
 } from "lucide-react";
 
 import SidebarItem from "./SidebarItems";
@@ -21,10 +21,9 @@ export default function Sidebar() {
 
       <SidebarItem icon={<LayoutDashboard size={28} />} link="/admin" tooltip="Dashboard" />
       <SidebarItem icon={<Package size={28} />} link="/admin/products" tooltip="Products" />
+      <SidebarItem icon={<PlusSquare size={28} />} link="/admin/add-product" tooltip="Add Product" />
+      <SidebarItem icon={<Tag size={28} />} link="/admin/manage-category" tooltip="Categories" />
       <SidebarItem icon={<ShoppingCart size={28} />} link="/admin/orders" tooltip="Orders" />
-      <SidebarItem icon={<Users size={28} />} link="/admin/users" tooltip="Users" />
-      <SidebarItem icon={<Settings size={28} />} link="/admin/settings" tooltip="Settings" />
-      
 
     </div>
   );

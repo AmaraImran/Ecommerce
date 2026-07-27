@@ -23,6 +23,8 @@ import ThankYou from "./pages/Thankyou";
 import Orders from "./pages/Orders";
 import OrderDetail from "./pages/Orderdetail";
 import AdminOrders from "./admin/pages/Orders";
+import ManageCategories from "./admin/pages/ManageCategory";
+import Dashboard from "./admin/pages/Dashboard";
 
 function App() {
   return (
@@ -50,8 +52,9 @@ function App() {
 
         {/* Admin Routes - Nested under /admin with its own layout */}
         <Route path="admin" element={<AdminLayout />}>
-          <Route index element={<AdminDashboard />} /> {/* /admin */}
+          <Route index element={<Dashboard />} /> {/* /admin */}
           <Route path="add-product" element={<AddProduct />} /> {/* /admin/add-product */}
+          <Route path="manage-category" element={<ManageCategories/>}/>
           <Route path="orders" element={<AdminOrders/>}/> {/* /admin/order */}
           {/* Add more admin routes here */}
           <Route path="products" element={<AdminProducts />} />

@@ -29,7 +29,7 @@ const ThankYou = () => {
           </button>
 
           <button
-            onClick={() => navigate("/orders")}
+            onClick={() => navigate("/order")}
             className="w-full border border-black text-black py-3 rounded-lg hover:bg-gray-100 transition"
           >
             View My Orders

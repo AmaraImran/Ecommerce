@@ -9,6 +9,7 @@ import path from 'path'
 import productRouter from './routes/product.route.js'
 import cartRouter from './routes/cart.route.js'
 import orderrouter from './routes/order.route.js'
+import categoryRouter from './routes/category.route.js'
 
 connectTodatabase().then(()=>{
     console.log("Database connected successfully")
@@ -27,5 +28,6 @@ app.use('/api/v1/auth',usersRouter)
 app.use('/api/v1/product',productRouter)
 app.use('/api/v1/cart',cartRouter)
 app.use('/api/v1/order',orderrouter)
+app.use("/api/v1/category",categoryRouter)
 
 app.listen(PORT)

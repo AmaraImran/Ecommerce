@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import api from "../services/api";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 export default function Login() {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -16,31 +18,28 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      
-
       const res = await api.post(`/auth/sign-in/`, formData, {
         withCredentials: true,
       });
-localStorage.setItem("token",res.data.token)
-localStorage.setItem("user",res.data.user)
-      
+
+      console.log("Login response:", res.data); // temp debug — check this in console
+
+      login(res.data.token); // stores token + sets user in context
+
       alert("Logged in successfully!");
       navigate("/");
     } catch (err) {
       console.error(err.response?.data || err.message);
-      alert(err.message);
+      alert(err.response?.data?.message || err.message);
     }
   };
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row text-white font-poppins">
-
-      {/* Left image — hidden on small screens */}
       <div className="hidden md:flex md:w-1/2 w-full items-center justify-center relative">
         <h1 className="absolute top-0 left-0 text-black text-3xl px-10 py-10 font-extrabold">
           LUDANZA
         </h1>
-
         <img
           src="/src/assets/login.jpg"
           alt="Login illustration"
@@ -48,7 +47,6 @@ localStorage.setItem("user",res.data.user)
         />
       </div>
 
-      {/* Right Side Form */}
       <div className="md:w-1/2 w-full flex items-center justify-center p-8 ">
         <div className="w-full max-w-md rounded-2xl p-8">
           <h2 className="text-2xl font-bold mb-0 text-black">Welcome Back 👋</h2>
@@ -92,7 +90,7 @@ localStorage.setItem("user",res.data.user)
           </form>
 
           <p className="text-center text-gray-400 mt-6">
-            Don’t have an account?{" "}
+            Don't have an account?{" "}
             <Link to="/signup" className="text-purple-400 hover:underline">
               Sign up
             </Link>

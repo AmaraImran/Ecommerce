@@ -115,7 +115,7 @@ const OrderDetail = () => {
         )}
 
         <button
-          onClick={() => navigate("/orders")}
+          onClick={() => navigate("/order")}
           className="px-6 py-3 border rounded-lg hover:bg-black hover:text-white"
         >
           Back to Orders
