@@ -1,7 +1,7 @@
 import express from 'express'
 const app=express()
 import usersRouter from './routes/auth.route.js'
-import { PORT } from './config/env.js'
+import { PORT, origin } from './config/env.js'
 import cookieparser from 'cookie-parser'
 import cors from 'cors'
 import connectTodatabase from './database/mongoose-connection.js'
@@ -10,16 +10,17 @@ import productRouter from './routes/product.route.js'
 import cartRouter from './routes/cart.route.js'
 import orderrouter from './routes/order.route.js'
 import categoryRouter from './routes/category.route.js'
-
 connectTodatabase().then(()=>{
     console.log("Database connected successfully")
 }).catch((e)=>{
     console.error("Database connection failed",e)
 })
+const allowedOrigins = Array.isArray(origin) ? origin : [origin]
 app.use(cors({
-    origin: process.env.origin,
+    origin: allowedOrigins,
     credentials:true,
 }))
+console.log("CORS allowed origins:", allowedOrigins);
 app.use(express.json())
 app.use(cookieparser())
 
