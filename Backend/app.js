@@ -33,3 +33,4 @@ app.use('/api/v1/order',orderrouter)
 app.use("/api/v1/category",categoryRouter)
 
 app.listen(PORT)
+export default app;
