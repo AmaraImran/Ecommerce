@@ -5,8 +5,9 @@ import api from "../../services/api";
 export default function EditProduct() {
   const { id } = useParams();
   const navigate = useNavigate();
-const token = localStorage.getItem("token");
+  const token = localStorage.getItem("token");
   const [product, setProduct] = useState(null);
+  const [categories, setCategories] = useState([]);
   const [newImage, setNewImage] = useState(null);
   const [preview, setPreview] = useState(null);
 
@@ -20,7 +21,18 @@ const token = localStorage.getItem("token");
         console.log("Error fetching product:", err);
       }
     };
+
+    const fetchCategories = async () => {
+      try {
+        const res = await api.get("/category/all-categories");
+        setCategories(res.data.categories || []);
+      } catch (err) {
+        console.log("Error fetching categories:", err);
+      }
+    };
+
     fetchProduct();
+    fetchCategories();
   }, [id]);
 
   if (!product)
@@ -35,39 +47,42 @@ const token = localStorage.getItem("token");
     setPreview(URL.createObjectURL(file));
   };
 
- const handleSubmit = async (e) => {
-  e.preventDefault();
+  // product.category may be a populated object ({_id, name}) or a raw id string
+  const currentCategoryId =
+    typeof product.category === "object" && product.category !== null
+      ? product.category._id
+      : product.category;
 
-  try {
-    const formData = new FormData();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-    // append fields
-    formData.append("name", product.name);
-    formData.append("price", product.price);
-    formData.append("stock", product.stock);
-    formData.append("category", product.category);
-    formData.append("description", product.description);
+    try {
+      const formData = new FormData();
 
-    // append image if user selected a new one
-    if (newImage) {
-      formData.append("image", newImage);
+      formData.append("name", product.name);
+      formData.append("price", product.price);
+      formData.append("stock", product.stock);
+      formData.append("category", currentCategoryId); // always send the plain id
+      formData.append("description", product.description);
+
+      if (newImage) {
+        formData.append("image", newImage);
+      }
+
+      await api.patch(`/product/${id}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      alert("Product updated successfully!");
+      navigate("/admin/products");
+    } catch (err) {
+      console.log("Update error:", err);
+      alert(err.response?.data?.message || "Error updating product");
     }
-
-    await api.patch(`/product/${id}`, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-        "Authorization": `Bearer ${token}`
-      },
-    });
-
-    alert("Product updated successfully!");
-    navigate("/admin/products");
-
-  } catch (err) {
-    console.log("Update error:", err);
-  }
-};
-
+  };
 
   return (
     <div className="p-6 flex justify-center bg-black min-h-screen">
@@ -131,14 +146,19 @@ const token = localStorage.getItem("token");
             </label>
             <select
               className="w-full border rounded-lg p-3 bg-gray-100 text-black focus:ring focus:ring-blue-300"
-              value={product.category}
+              value={currentCategoryId || ""}
               onChange={(e) =>
                 setProduct({ ...product, category: e.target.value })
               }
             >
-              <option value="tech">Tech</option>
-              <option value="electronics">Electronics</option>
-              <option value="clothes">Clothes</option>
+              <option value="" disabled>
+                Select a category
+              </option>
+              {categories.map((cat) => (
+                <option key={cat._id} value={cat._id}>
+                  {cat.name}
+                </option>
+              ))}
             </select>
           </div>
 

@@ -15,27 +15,24 @@ const ProductDetail = () => {
       console.log("Error fetching product:", error);
     }
   };
-const addToCart = async (productId) => {
-  console.log("Adding to cart:", productId);
-  try {
-    await api.post(
-      "/cart/addtocart",
-      { productId },
-      {
-        headers: {
-          "Authorization": `Bearer ${localStorage.getItem("token")}`,
-        },
-      }
-    );
 
-    alert("Added to cart");
-        
-    navigate("/cart");
-  } catch (error) {
-    console.log("Add to cart error:", error.response?.data || error.message);
-  }
-};
-
+  const addToCart = async (productId) => {
+    try {
+      await api.post(
+        "/cart/addtocart",
+        { productId },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      alert("Added to cart");
+      navigate("/cart");
+    } catch (error) {
+      console.log("Add to cart error:", error.response?.data || error.message);
+    }
+  };
 
   useEffect(() => {
     fetchProduct();
@@ -44,53 +41,52 @@ const addToCart = async (productId) => {
   if (!product) return <p className="text-center mt-20">Loading...</p>;
 
   return (
-    <div className="max-w-6xl mx-auto px-5 py-10">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-        
-        {/* LEFT IMAGE */}
-     <div className="flex justify-center items-center">
-  <img
-    src={product.image}
-    alt={product.name}
-    className="w-full max-w-sm md:max-w-md rounded-lg shadow-lg object-cover"
-  />
-</div>
+    <div className="min-h-screen bg-[#F7F1E6]">
+      <div className="max-w-5xl mx-auto px-5 py-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
 
+          {/* LEFT IMAGE — fixed-height box, image cropped to fill it, no scroll no matter the source size */}
+          <div className="w-full h-[420px] md:h-[480px] rounded-xl overflow-hidden shadow-lg bg-[#FFFDF8]">
+            <img
+              src={product.image}
+              alt={product.name}
+              className="w-full h-full object-cover"
+            />
+          </div>
 
-        {/* RIGHT INFO */}
-        <div className="flex flex-col justify-center">
-          <h1 className="text-3xl font-bold">{product.name}</h1>
+          {/* RIGHT INFO */}
+          <div className="flex flex-col justify-center">
+            <h1 className="text-3xl font-bold text-[#2B2420]">{product.name}</h1>
 
-          <p className="mt-2 text-gray-600">{product.category}</p>
+            <p className="mt-2 text-[#8A8070]">{product.category?.name || product.category}</p>
 
-          <p className="mt-2 text-green-600 font-semibold">
-            {product.stock > 0 ? "In stock" : "Out of stock"}
-          </p>
+            <p className="mt-2 text-[#3F5B4E] font-semibold">
+              {product.stock > 0 ? "In stock" : "Out of stock"}
+            </p>
 
-          <p className="mt-4 text-2xl font-bold">${product.price}</p>
+            <p className="mt-4 text-2xl font-bold text-[#2B2420]">${product.price}</p>
 
-          <h3 className="mt-6 font-semibold text-lg">Description</h3>
-          <p className="text-gray-700 mt-1 leading-relaxed">
-            {product.description}
-          </p>
+            <h3 className="mt-6 font-semibold text-lg text-[#2B2420]">Description</h3>
+            <p className="text-[#5C5346] mt-1 leading-relaxed">
+              {product.description}
+            </p>
 
-          {/* ADD TO CART */}
- <button
-  disabled={product.stock <= 0}
-  onClick={() => addToCart(product._id)}
-  className={`w-full py-3 rounded-lg transition
-    ${
-      product.stock > 0
-        ? "bg-black text-white hover:bg-gray-800"
-        : "bg-gray-300 text-gray-500 cursor-not-allowed"
-    }`}
->
-  {product.stock > 0 ? "Add to Cart" : "Out of Stock"}
-</button>
-
+            {/* ADD TO CART */}
+            <button
+              disabled={product.stock <= 0}
+              onClick={() => addToCart(product._id)}
+              className={`w-full py-3 rounded-lg transition mt-6
+                ${
+                  product.stock > 0
+                    ? "bg-[#3F5B4E] text-[#FBF7EE] hover:bg-[#2F4A3D]"
+                    : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                }`}
+            >
+              {product.stock > 0 ? "Add to Cart" : "Out of Stock"}
+            </button>
+          </div>
 
         </div>
-
       </div>
     </div>
   );

@@ -35,86 +35,90 @@ export default function Orders() {
 
   if (loading) {
     return (
-      <div className="max-w-4xl mx-auto px-6 py-16">
-        <p className="text-gray-500">Loading your orders...</p>
+      <div className="min-h-screen bg-[#EFE6D6]">
+        <div className="max-w-4xl mx-auto px-6 py-16">
+          <p className="text-[#8A8070]">Loading your orders...</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-6 py-12">
-      <h1 className="text-3xl font-extrabold text-black mb-8">My Orders</h1>
+    <div className="min-h-screen bg-[#EFE6D6]">
+      <div className="max-w-4xl mx-auto px-6 py-12">
+        <h1 className="text-3xl font-extrabold text-[#2B2420] mb-8">My Orders</h1>
 
-      {orders.length === 0 ? (
-        <div className="bg-white border rounded-2xl p-12 text-center shadow-sm">
-          <Package className="mx-auto text-gray-300 mb-4" size={48} />
-          <p className="text-gray-500 mb-4">You haven't placed any orders yet.</p>
-          <Link
-            to="/product"
-            className="inline-block bg-black text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition"
-          >
-            Start Shopping
-          </Link>
-        </div>
-      ) : (
-        <div className="space-y-4">
-          {orders.map((order) => (
+        {orders.length === 0 ? (
+          <div className="bg-[#FFFDF8] border border-[#E3D8C4] rounded-2xl p-12 text-center shadow-sm">
+            <Package className="mx-auto text-[#C9BEA8] mb-4" size={48} />
+            <p className="text-[#8A8070] mb-4">You haven't placed any orders yet.</p>
             <Link
-              key={order._id}
-              to={`/orders/${order._id}`}
-              className="block bg-white border rounded-2xl p-6 shadow-sm hover:shadow-md transition"
+              to="/product"
+              className="inline-block bg-[#3F5B4E] text-[#FBF7EE] px-6 py-3 rounded-lg hover:bg-[#2F4A3D] transition"
             >
-              <div className="flex flex-wrap justify-between items-center gap-4">
-                <div>
-                  <p className="text-xs text-gray-400 uppercase tracking-wide">
-                    Order ID
-                  </p>
-                  <p className="font-semibold text-black text-sm mt-1">
-                    #{order._id.slice(-8)}
-                  </p>
-                </div>
-
-                <div>
-                  <p className="text-xs text-gray-400 uppercase tracking-wide">
-                    Placed On
-                  </p>
-                  <p className="text-black text-sm mt-1">
-                    {new Date(order.createdAt).toLocaleDateString()}
-                  </p>
-                </div>
-
-                <div>
-                  <p className="text-xs text-gray-400 uppercase tracking-wide">
-                    Items
-                  </p>
-                  <p className="text-black text-sm mt-1">
-                    {order.items.length} item{order.items.length > 1 ? "s" : ""}
-                  </p>
-                </div>
-
-                <div>
-                  <p className="text-xs text-gray-400 uppercase tracking-wide">
-                    Total
-                  </p>
-                  <p className="font-bold text-black text-sm mt-1">
-                    ${order.totalAmount}
-                  </p>
-                </div>
-
-                <span
-                  className={`px-3 py-1 rounded-full text-xs font-medium ${
-                    statusStyles[order.orderStatus] || "bg-gray-100 text-gray-600"
-                  }`}
-                >
-                  {order.orderStatus}
-                </span>
-
-                <ChevronRight className="text-gray-400" size={20} />
-              </div>
+              Start Shopping
             </Link>
-          ))}
-        </div>
-      )}
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {orders.map((order) => (
+              <Link
+                key={order._id}
+                to={`/orders/${order._id}`}
+                className="block bg-[#FFFDF8] border border-[#E3D8C4] rounded-2xl p-6 shadow-sm hover:shadow-md transition"
+              >
+                <div className="flex flex-wrap justify-between items-center gap-4">
+                  <div>
+                    <p className="text-xs text-[#8A8070] uppercase tracking-wide">
+                      Order ID
+                    </p>
+                    <p className="font-semibold text-[#2B2420] text-sm mt-1">
+                      #{order._id.slice(-8)}
+                    </p>
+                  </div>
+
+                  <div>
+                    <p className="text-xs text-[#8A8070] uppercase tracking-wide">
+                      Placed On
+                    </p>
+                    <p className="text-[#2B2420] text-sm mt-1">
+                      {new Date(order.createdAt).toLocaleDateString()}
+                    </p>
+                  </div>
+
+                  <div>
+                    <p className="text-xs text-[#8A8070] uppercase tracking-wide">
+                      Items
+                    </p>
+                    <p className="text-[#2B2420] text-sm mt-1">
+                      {order.items.length} item{order.items.length > 1 ? "s" : ""}
+                    </p>
+                  </div>
+
+                  <div>
+                    <p className="text-xs text-[#8A8070] uppercase tracking-wide">
+                      Total
+                    </p>
+                    <p className="font-bold text-[#2B2420] text-sm mt-1">
+                      ${order.totalAmount}
+                    </p>
+                  </div>
+
+                  <span
+                    className={`px-3 py-1 rounded-full text-xs font-medium ${
+                      statusStyles[order.orderStatus] || "bg-gray-100 text-gray-600"
+                    }`}
+                  >
+                    {order.orderStatus}
+                  </span>
+
+                  <ChevronRight className="text-[#8A8070]" size={20} />
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

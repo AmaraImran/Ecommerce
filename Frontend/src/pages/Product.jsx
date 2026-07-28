@@ -1,17 +1,32 @@
 import { useEffect, useState } from "react";
 import api from "../services/api"; // axios instance
 import { Link } from "react-router-dom";
+
 export default function Shop() {
   const [products, setProducts] = useState([]);
   const [total, setTotal] = useState(0);
+  const [categories, setCategories] = useState([]);
 
   // Filters
-  const [category, setCategory] = useState("");
+  const [category, setCategory] = useState(""); // will hold category _id now
   const [sort, setSort] = useState("latest");
 
   // Pagination
   const [page, setPage] = useState(1);
   const limit = 9;
+
+  // Fetch categories once on mount
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await api.get("/category/all-categories");
+        setCategories(res.data.categories || []);
+      } catch (err) {
+        console.error("Error fetching categories:", err);
+      }
+    };
+    fetchCategories();
+  }, []);
 
   useEffect(() => {
     fetchProducts();
@@ -20,17 +35,15 @@ export default function Shop() {
   const fetchProducts = async () => {
     try {
       const res = await api.get("/product/", {
-       params: {
-    page,
-    limit,
-    category,
-    sort,
-  },
+        params: {
+          page,
+          limit,
+          category, // now sends the real category _id, or "" for all
+          sort,
+        },
       });
-console.log(res.data);
       setProducts(res.data.products);
       setTotal(res.data.totalCount);
-
     } catch (err) {
       console.log("Fetch error:", err);
     }
@@ -39,27 +52,32 @@ console.log(res.data);
   const totalPages = Math.ceil(total / limit);
 
   return (
-    <div className="w-full flex gap-10 px-10 py-10">
-
+    <div className="w-full flex gap-10 px-10 py-10 bg-[#F5EFE2]">
       {/* LEFT SIDEBAR */}
       <aside className="w-64">
         <h2 className="text-lg font-semibold mb-4">Product Categories</h2>
         <div className="space-y-2">
-          {["tech", "Unstitched", "Shirt", "Accessories", "Laptops", "Phones"].map(cat => (
-            <label key={cat} className="flex items-center gap-2 cursor-pointer">
+          {categories.map((cat) => (
+            <label key={cat._id} className="flex items-center gap-2 cursor-pointer">
               <input
                 type="radio"
                 name="category"
-                checked={category === cat.toLowerCase()}
-                onChange={() => setCategory(cat.toLowerCase())}
+                checked={category === cat._id}
+                onChange={() => {
+                  setCategory(cat._id);
+                  setPage(1); // reset to page 1 on filter change
+                }}
               />
-              {cat}
+              {cat.name}
             </label>
           ))}
 
           {/* Reset Category */}
           <button
-            onClick={() => setCategory("")}
+            onClick={() => {
+              setCategory("");
+              setPage(1);
+            }}
             className="text-sm underline text-gray-600"
           >
             Clear
@@ -97,31 +115,37 @@ console.log(res.data);
         </div>
 
         {/* PRODUCTS GRID */}
-        {/* PRODUCTS GRID */}
-<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-  {products.map(product => (
-    <Link
-      key={product._id}
-      to={`/product/${product._id}`}
-      className="cursor-pointer block"
-    >
-      <img
-        src={product.image}
-        alt={product.name}
-        className="w-full h-60 object-cover bg-gray-100 rounded-lg"
-      />
+       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        {products.map((product) => (
+          <Link
+            key={product._id}
+            to={`/product/${product._id}`}
+            className="group block bg-[#FFFDF8] rounded-2xl border border-[#E3D8C4] overflow-hidden shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
+          >
+            {/* Image */}
+            <div className="relative overflow-hidden bg-[#F5EFE2]">
+              <img
+                src={product.image}
+                alt={product.name}
+                className="w-full h-60 object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+              <span className="absolute top-3 right-3 bg-[#6B7A4F] text-[#FBF7EE] text-xs font-semibold px-3 py-1 rounded-full shadow-sm">
+                ${product.price}
+              </span>
+            </div>
 
-      <h3 className="mt-3 font-semibold text-lg">{product.name}</h3>
-
-      <p className="text-gray-600 text-sm line-clamp-2">
-        {product.description}
-      </p>
-
-      <p className="font-semibold mt-1">${product.price}</p>
-    </Link>
-  ))}
-</div>
-
+            {/* Info */}
+            <div className="p-4">
+              <h3 className="font-semibold text-lg text-[#2B2420] group-hover:text-[#6B7A4F] transition-colors">
+                {product.name}
+              </h3>
+              <p className="text-[#8A8070] text-sm mt-1 line-clamp-2">
+                {product.description}
+              </p>
+            </div>
+          </Link>
+        ))}
+      </div>
 
         {/* PAGINATION */}
         <div className="flex justify-center mt-10 gap-3">

@@ -15,9 +15,12 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="w-full shadow-sm">
+    <nav className="w-full shadow-sm bg-[#FBF7EE]">
       <div className="flex justify-between items-center py-5 px-6 md:px-16">
-        <Link to="/" className="text-2xl font-extrabold tracking-widest">
+        <Link
+          to="/"
+          className="text-2xl font-extrabold tracking-widest text-[#2B2420]"
+        >
           LUDANZA
         </Link>
 
@@ -32,7 +35,7 @@ export default function Navbar() {
               <NavItem to="/admin" label="Admin Panel" />
               <button
                 onClick={handleLogout}
-                className="px-6 py-2 bg-black text-white rounded-xl hover:bg-purple-700 transition"
+                className="px-6 py-2 bg-[#3F5B4E] text-[#FBF7EE] rounded-xl hover:bg-[#2F4A3D] transition"
               >
                 Logout
               </button>
@@ -43,7 +46,7 @@ export default function Navbar() {
               <NavItem to="/order" label="My Orders" />
               <button
                 onClick={handleLogout}
-                className="px-6 py-2 bg-black text-white rounded-xl hover:bg-purple-700 transition"
+                className="px-6 py-2 bg-[#3F5B4E] text-[#FBF7EE] rounded-xl hover:bg-[#2F4A3D] transition"
               >
                 Logout
               </button>
@@ -51,7 +54,7 @@ export default function Navbar() {
           ) : (
             <Link
               to="/login"
-              className="px-6 py-2 bg-black text-white rounded-xl hover:bg-purple-700 transition"
+              className="px-6 py-2 bg-[#3F5B4E] text-[#FBF7EE] rounded-xl hover:bg-[#2F4A3D] transition"
             >
               Login
             </Link>
@@ -59,14 +62,17 @@ export default function Navbar() {
         </ul>
 
         {/* Mobile Toggle */}
-        <button className="md:hidden" onClick={() => setOpen(!open)}>
+        <button
+          className="md:hidden text-[#2B2420]"
+          onClick={() => setOpen(!open)}
+        >
           {open ? <X size={26} /> : <Menu size={26} />}
         </button>
       </div>
 
       {/* Mobile Dropdown */}
       {open && (
-        <div className="md:hidden bg-white px-6 pb-4 space-y-4 text-black font-medium">
+        <div className="md:hidden bg-[#FBF7EE] px-6 pb-4 space-y-4 text-[#2B2420] font-medium">
           <MobileItem to="/" label="Home" setOpen={setOpen} />
           <MobileItem to="/product" label="Shop" setOpen={setOpen} />
           <MobileItem to="/cart" label="Cart" setOpen={setOpen} />
@@ -76,7 +82,7 @@ export default function Navbar() {
               <MobileItem to="/admin" label="Admin Panel" setOpen={setOpen} />
               <button
                 onClick={handleLogout}
-                className="block w-full text-left px-4 py-2 bg-black text-white rounded-xl text-center"
+                className="block w-full text-left px-4 py-2 bg-[#3F5B4E] text-[#FBF7EE] rounded-xl text-center"
               >
                 Logout
               </button>
@@ -87,7 +93,7 @@ export default function Navbar() {
               <MobileItem to="/order" label="My Orders" setOpen={setOpen} />
               <button
                 onClick={handleLogout}
-                className="block w-full text-left px-4 py-2 bg-black text-white rounded-xl text-center"
+                className="block w-full text-left px-4 py-2 bg-[#3F5B4E] text-[#FBF7EE] rounded-xl text-center"
               >
                 Logout
               </button>
@@ -95,7 +101,7 @@ export default function Navbar() {
           ) : (
             <Link
               to="/login"
-              className="block px-4 py-2 bg-black text-white rounded-xl text-center"
+              className="block px-4 py-2 bg-[#3F5B4E] text-[#FBF7EE] rounded-xl text-center"
               onClick={() => setOpen(false)}
             >
               Login
@@ -110,9 +116,9 @@ export default function Navbar() {
 function NavItem({ to, label }) {
   return (
     <li>
-      <Link to={to} className="relative group">
+      <Link to={to} className="relative group text-[#2B2420]">
         {label}
-        <span className="absolute left-0 bottom-0 h-[2px] w-0 bg-black transition-all duration-300 group-hover:w-full"></span>
+        <span className="absolute left-0 bottom-0 h-[2px] w-0 bg-[#3F5B4E] transition-all duration-300 group-hover:w-full"></span>
       </Link>
     </li>
   );
