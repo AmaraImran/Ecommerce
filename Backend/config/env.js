@@ -1,6 +1,18 @@
 import { config } from "dotenv";
+import path from "path";
+import { fileURLToPath } from "url";
 
-config({ path: `.env.${process.env.NODE_ENV || 'development'}.local` });
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const envName = process.env.NODE_ENV || "development";
+
+config({
+  path: [
+    path.resolve(__dirname, `../.env.${envName}.local`),
+    path.resolve(__dirname, "../.env.local"),
+    path.resolve(__dirname, "../.env"),
+  ],
+});
 
 const normalizeCorsOrigins = (value) => {
   if (!value) {

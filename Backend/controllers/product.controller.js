@@ -13,7 +13,7 @@ export const createProduct = async (req, res) => {
     // Upload image if provided
     let imageUrl = "";
     if (req.file) {
-      const uploadResult = await UploadOnCloudinary(req.file.path);
+      const uploadResult = await UploadOnCloudinary(req.file.buffer);
 
       if (!uploadResult) {
         return res.status(500).json({ message: "Image upload failed" });
@@ -136,7 +136,7 @@ export const updateProduct = async (req, res) => {
 
         // If new image is uploaded
         if (req.file) {
-            const cloudinaryResponse = await UploadOnCloudinary(req.file.path);
+            const cloudinaryResponse = await UploadOnCloudinary(req.file.buffer);
 
             if (!cloudinaryResponse) {
                 return res.status(500).json({ message: "Image upload failed" });
