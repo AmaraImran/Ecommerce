@@ -18,7 +18,7 @@ connectTodatabase().then(()=>{
 const allowedOrigins = Array.isArray(origin) ? origin : [origin]
 app.use(cors({
   origin:["http://localhost:5173",
-    "https://ecommercefrontend-wheat-five.vercel.app/"],
+    "https://ecommercefrontend-wheat-five.vercel.app"],
     credentials:true,
 }))
 console.log("CORS allowed origins:", allowedOrigins);
