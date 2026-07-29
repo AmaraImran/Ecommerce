@@ -5,6 +5,7 @@ import { useNavigate, Link } from "react-router-dom";
 
 const Cart = () => {
   const [cart, setCart] = useState(null);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const token = localStorage.getItem("token");
@@ -26,10 +27,11 @@ const Cart = () => {
     if (quantity < 1) return;
 
     if (quantity > stock) {
-      alert(`Only ${stock} left in stock`);
+      setError(`Only ${stock} left in stock`);
       return;
     }
 
+    setError("");
     try {
       await api.patch(
         "/cart/update-quantity",
@@ -41,8 +43,8 @@ const Cart = () => {
         }
       );
       fetchCart();
-    } catch (error) {
-      console.log("Update quantity error:", error);
+    } catch (err) {
+      setError(err.response?.data?.message || "Couldn't update quantity.");
     }
   };
 
@@ -110,6 +112,12 @@ const Cart = () => {
         {/* LEFT - CART ITEMS */}
         <div className="lg:col-span-2">
           <h1 className="text-3xl font-bold text-[#2B2420] mb-6">Cart</h1>
+
+          {error && (
+            <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg p-3 mb-4">
+              {error}
+            </div>
+          )}
 
           <div className="space-y-4">
             {/* Unavailable items — product was deleted */}

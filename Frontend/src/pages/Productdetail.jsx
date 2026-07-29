@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
 import api from "../services/api";
+import { AlertCircle } from "lucide-react";
 
 const ProductDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [product, setProduct] = useState(null);
+  const [error, setError] = useState("");
 
   const fetchProduct = async () => {
     try {
@@ -17,20 +19,28 @@ const ProductDetail = () => {
   };
 
   const addToCart = async (productId) => {
+    setError("");
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      setError("Please log in to add items to your cart.");
+      return;
+    }
+
     try {
       await api.post(
         "/cart/addtocart",
         { productId },
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${token}`,
           },
         }
       );
-      alert("Added to cart");
       navigate("/cart");
     } catch (error) {
       console.log("Add to cart error:", error.response?.data || error.message);
+      setError(error.response?.data?.message || "Couldn't add this item to your cart.");
     }
   };
 
@@ -45,7 +55,7 @@ const ProductDetail = () => {
       <div className="max-w-5xl mx-auto px-5 py-10">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
 
-          {/* LEFT IMAGE — fixed-height box, image cropped to fill it, no scroll no matter the source size */}
+          {/* LEFT IMAGE */}
           <div className="w-full h-[420px] md:h-[480px] rounded-xl overflow-hidden shadow-lg bg-[#FFFDF8]">
             <img
               src={product.image}
@@ -58,7 +68,9 @@ const ProductDetail = () => {
           <div className="flex flex-col justify-center">
             <h1 className="text-3xl font-bold text-[#2B2420]">{product.name}</h1>
 
-            <p className="mt-2 text-[#8A8070]">{product.category?.name || product.category}</p>
+            <p className="mt-2 text-[#8A8070]">
+              {product.category?.name || product.category}
+            </p>
 
             <p className="mt-2 text-[#3F5B4E] font-semibold">
               {product.stock > 0 ? "In stock" : "Out of stock"}
@@ -71,7 +83,20 @@ const ProductDetail = () => {
               {product.description}
             </p>
 
-            {/* ADD TO CART */}
+            {error && (
+              <div className="mt-4 flex items-start gap-2 bg-red-50 border border-red-200 text-red-700 rounded-lg p-3 text-sm">
+                <AlertCircle size={18} className="mt-0.5 flex-shrink-0" />
+                <p>
+                  {error}{" "}
+                  {error.includes("log in") && (
+                    <Link to="/login" className="underline font-medium">
+                      Go to Login
+                    </Link>
+                  )}
+                </p>
+              </div>
+            )}
+
             <button
               disabled={product.stock <= 0}
               onClick={() => addToCart(product._id)}
