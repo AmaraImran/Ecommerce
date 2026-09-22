@@ -16,7 +16,10 @@ export const placeOrder = async (req, res) => {
     // 2. Calculate total
     let totalAmount = 0;
 
-    for (let item of cart.items) {
+        for (const item of cart.items) {
+            if (!item.productId) {
+                return res.status(400).json({ message: "Your cart contains an unavailable product" });
+            }
       totalAmount += item.productId.price * item.quantity;
     }
 
@@ -45,11 +48,10 @@ export const placeOrder = async (req, res) => {
       orderStatus: "Pending",
     });
 
-    // 5. Empty cart after order placed
-    await Cart.findOneAndUpdate(
-      { userId },
-      { items: [] }
-    );
+        // Keep the cart for Safepay orders so it can be retried if checkout fails.
+        if (order.paymentMethod !== "SAFEPAY") {
+            await Cart.findOneAndUpdate({ userId }, { items: [] });
+        }
 
     res.status(201).json({
       success: true,
@@ -150,6 +152,10 @@ export const cancelOrder = async (req, res) => {
 
         if (order.orderStatus !== "Pending") {
             return res.status(400).json({ message: "You cannot cancel this order now" });
+        }
+
+        if (order.paymentMethod === "SAFEPAY") {
+            return res.status(400).json({ message: "Safepay orders cannot be cancelled" });
         }
 
         order.orderStatus = "Cancelled";

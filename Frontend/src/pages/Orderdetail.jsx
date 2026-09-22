@@ -58,6 +58,8 @@ const OrderDetail = () => {
     }
   };
 
+  const isSafepayOrder = order?.paymentMethod === "SAFEPAY";
+
   useEffect(() => {
     fetchOrder();
   }, [id]);
@@ -177,7 +179,7 @@ const OrderDetail = () => {
 
         {/* ACTIONS */}
         <div className="mt-6">
-          {order.orderStatus === "Pending" ? (
+          {order.orderStatus === "Pending" && !isSafepayOrder ? (
             <button
               onClick={cancelOrder}
               disabled={cancelling}
@@ -187,7 +189,9 @@ const OrderDetail = () => {
             </button>
           ) : (
             <p className="text-[#8A8070] text-sm">
-              This order can no longer be cancelled.
+              {isSafepayOrder
+                ? "Safepay orders cannot be cancelled."
+                : "This order can no longer be cancelled."}
             </p>
           )}
         </div>

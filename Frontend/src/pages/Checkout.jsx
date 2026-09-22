@@ -45,7 +45,8 @@ const Checkout = () => {
 
     setPlacing(true);
     try {
-      await api.post(
+      // Step 1: create the order in your DB either way (COD or Safepay)
+      const orderRes = await api.post(
         "/order/place-order",
         {
           shippingAddress: address,
@@ -58,7 +59,38 @@ const Checkout = () => {
         }
       );
 
-      navigate("/thankyou");
+      const orderId = orderRes.data.order?._id;
+      if (!orderId) {
+        throw new Error("The order was created without an ID.");
+      }
+
+      // Step 2: branch based on payment method
+      if (paymentMethod === "COD") {
+        navigate("/thankyou");
+        return;
+      }
+
+      if (paymentMethod === "SAFEPAY") {
+        // Ask YOUR backend to create the Safepay session and give back a checkout URL
+        const paymentRes = await api.post(
+          "/payment/checkout",
+          { orderId },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        const { checkoutUrl } = paymentRes.data;
+        if (!checkoutUrl) {
+          throw new Error("Safepay did not return a checkout URL.");
+        }
+
+        // Redirect the browser to Safepay's hosted checkout page
+        window.location.href = checkoutUrl;
+        return; // don't navigate to /thankyou — Safepay's redirectUrl handles that after payment
+      }
     } catch (error) {
       setOrderError(
         error.response?.data?.message || "Something went wrong placing your order. Please try again."
@@ -68,7 +100,6 @@ const Checkout = () => {
     }
   };
 
-  // Not logged in — show a clear message instead of silently failing
   if (!token) {
     return (
       <div className="min-h-screen bg-[#EFE6D6] flex items-center justify-center px-6">
@@ -174,6 +205,15 @@ const Checkout = () => {
               Cash on Delivery
             </label>
 
+            <label className="flex items-center gap-2">
+              <input
+                type="radio"
+                checked={paymentMethod === "SAFEPAY"}
+                onChange={() => setPaymentMethod("SAFEPAY")}
+              />
+              Pay with Card (Safepay)
+            </label>
+
             <label className="flex items-center gap-2 opacity-50">
               <input type="radio" disabled />
               JazzCash (Coming Soon)
@@ -192,7 +232,11 @@ const Checkout = () => {
           disabled={placing}
           className="w-full bg-[#3F5B4E] text-[#FBF7EE] py-3 rounded-lg hover:bg-[#2F4A3D] transition disabled:opacity-50"
         >
-          {placing ? "Placing order..." : "Place Order"}
+          {placing
+            ? "Processing..."
+            : paymentMethod === "SAFEPAY"
+            ? "Proceed to Payment"
+            : "Place Order"}
         </button>
       </div>
     </div>
